@@ -1,0 +1,43 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xappworkspaces.app.crossplane.example.io
+spec:
+  claimNames:
+    kind: AppWorkspace
+    plural: appworkspaces
+  group: app.crossplane.example.io
+  names:
+    kind: XAppWorkspace
+    plural: xappworkspaces
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          properties:
+            spec:
+              description: AppWorkspace is a workspace consisting of a GitLab Repo, Access Token and ArgoCD Repository integration
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    projectName:
+                      description: Name of the GitLab Project and Argo Repo.
+                      type: string
+                  required:
+                  - projectName
+              required:
+              - parameters
+              type: object
+            status:
+              description: The state of this resource claim
+              properties:
+                resources:
+                  description: The states of the managed resources that belong to this
+                    claim
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+              type: object
+          type: object

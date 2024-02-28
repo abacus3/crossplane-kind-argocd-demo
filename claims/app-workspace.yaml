@@ -1,0 +1,8 @@
+apiVersion: app.crossplane.example.io/v1alpha1
+kind: AppWorkspace
+metadata:
+  name: example-app
+  namespace: default
+spec:
+  parameters:
+    projectName: my-example-app

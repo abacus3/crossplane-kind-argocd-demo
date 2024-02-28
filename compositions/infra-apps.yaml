@@ -1,0 +1,54 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: infra.crossplane.example.io
+spec:
+  compositeTypeRef:
+    apiVersion: infra.crossplane.example.io/v1alpha1
+    kind: XInfraServiceBundle
+  resources:
+    - name: argocd-release
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        metadata:
+          name: argocd
+          annotations:
+            crossplane.io/external-name: argocd
+        spec:
+          forProvider:
+            chart:
+              name: argo-cd
+              repository: https://argoproj.github.io/argo-helm
+              version: 6.4.0
+            namespace: argocd
+            values:
+              fullnameOverride: argocd
+          providerConfigRef:
+            name: in-cluster
+      patches:
+      - fromFieldPath: spec.parameters.argocd.version
+        toFieldPath: sppec.forProvider.chart.version
+      - fromFieldPath: spec.parameters.toCluster
+        toFieldPath: sppec.providerConfigRef.name
+      - fromFieldPath: metadata.name
+        toFieldPath: status.resources[argocd-release].name
+        type: ToCompositeFieldPath
+      - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+        toFieldPath: status.resources[argocd-release].externalName
+        type: ToCompositeFieldPath
+      - fromFieldPath: kind
+        toFieldPath: status.resources[argocd-release].kind
+        type: ToCompositeFieldPath
+      - fromFieldPath: apiVersion
+        toFieldPath: status.resources[argocd-release].apiVersion
+        type: ToCompositeFieldPath
+      - fromFieldPath: status.conditions
+        toFieldPath: status.resources[argocd-release].status.conditions
+        type: ToCompositeFieldPath
+      - fromFieldPath: status.atProvider
+        toFieldPath: status.resources[argocd-release].status.atProvider
+        type: ToCompositeFieldPath
+      - fromFieldPath: status.resources
+        toFieldPath: status.resources[argocd-release].status.resources
+        type: ToCompositeFieldPath

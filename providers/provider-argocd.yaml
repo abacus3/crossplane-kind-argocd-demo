@@ -1,0 +1,32 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-argocd
+spec:
+  package: xpkg.upbound.io/crossplane-contrib/provider-argocd:v0.6.0
+  runtimeConfigRef:
+    apiVersion: pkg.crossplane.io/v1beta1
+    kind: DeploymentRuntimeConfig
+    name: provider-argocd
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-argocd
+spec:
+  serviceAccountTemplate:
+    metadata:
+      name: provider-argocd
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: provider-argocd-cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: provider-argocd
+    namespace: crossplane-system
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io

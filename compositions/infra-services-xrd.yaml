@@ -1,0 +1,46 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xinfraservicebundles.infra.crossplane.example.io
+spec:
+  claimNames:
+    kind: InfraServiceBundle
+    plural: infraservicebundles
+  group: infra.crossplane.example.io
+  names:
+    kind: XInfraServiceBundle
+    plural: xinfraservicebundles
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          properties:
+            spec:
+              description: InfraServiceBundle is a bundle of apps to install in kubernetes
+              properties:
+                argocd:
+                  type: object
+                  description: ArgoCD Helm Chart config parameters
+                  properties:
+                    version:
+                      description: ArgoCD Helm Chart Version
+                      type: string
+                      default: 6.4.0
+                toCluster:
+                  type: string
+                  description: The kubernetes cluster to install this chart in
+                  default: in-cluster
+                  example: some-other-cluster-name
+              type: object
+            status:
+              description: The state of this resource claim
+              properties:
+                resources:
+                  description: The states of the managed resources that belong to this
+                    claim
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+              type: object
+          type: object

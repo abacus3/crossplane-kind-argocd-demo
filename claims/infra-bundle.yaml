@@ -1,0 +1,7 @@
+apiVersion: infra.crossplane.example.io/v1alpha1
+kind: InfraServiceBundle
+metadata:
+  name: example-bundle
+  namespace: default
+spec:
+  toCluster: in-cluster
